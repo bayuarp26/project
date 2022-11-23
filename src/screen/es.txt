@@ -1,0 +1,134 @@
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image, 
+  TextInput,
+  TouchableOpacity
+} from 'react-native'
+import React, {useState} from 'react'
+import Logo from '../assets/Logo.png'
+import { useNavigation } from '@react-navigation/native'
+import axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const App = () => {
+  const navigation = useNavigation();
+  const [nip, setNip] = useState("1607");
+  const [password, setPassword] = useState("123");
+
+  const handLogin = async (value) => {
+    try{
+      const response = await axios.post('http://192.168.82.74:3200/users/login',{
+      nip: value.nip,
+      password: value.password
+    })
+    if (response.data.status == 200) {
+      console.log('response', response.data)
+      // navigation.navigate('Account')
+      // AsyncStorage.setItem
+      // await AsyncStorage.setItem('password', value.password)
+      // await AsyncStorage.setItem('nip', value.nip)
+      // await AsyncStorage.setItem('nama', response.users.users.nama)
+    }
+  } catch (error){
+  console.log(error.message)
+}
+  }
+  return (
+    <View style={styles.container}>
+      <Image
+      source={Logo}
+      style={styles.logo}
+      />
+      <Text
+        style={{
+          color: "#fff",
+          fontSize: 25,
+          fontWeight: "bold",
+          marginBottom: 40,
+        }}
+      >
+        MisQueen
+      </Text>
+      <View style={styles.container1}>
+        <TextInput
+        style={styles.input}
+        placeholder="Email"
+        placeholderTextColor="#fff"
+        onChangeText={(nip) => setNip(nip)}
+        value={nip}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          placeholderTextColor="#fff"
+          secureTextEntry={true}
+          onChangeText={(password) => setPassword(password)}
+          value={password}
+        />
+        <TouchableOpacity 
+        style={styles.button}
+          onPress={async() => {
+              await handLogin({ nip, password});
+           }}>
+            <Text style={styles.textLogin}>Login</Text>
+        </TouchableOpacity>
+            <Text style={styles.text}>
+              Don't have an account?
+            <Text style={{fontWeight: 'bold',}}
+            onPress={() => navigation.navigate('RegisterScreen')}
+            > Sign Up</Text>
+        </Text>
+      </View>
+    </View>
+  )
+  }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#000",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  logo: {
+    width: 150,
+    height: 150,
+    marginBottom: 10,
+  },
+  container1: {
+    width: "80%",
+    height: 50,
+   
+  },
+  input: { //email dan password
+    backgroundColor: "#5f5f5f",
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+    paddingHorizontal: 15, //posisi text
+    marginBottom: 10,
+    borderRadius: 10,
+  },
+  button: {
+    backgroundColor: "#f7077b",
+    padding: 10,
+    borderRadius:20,
+    alignItems: "center",
+  },
+  textLogin: {
+    color: "#000",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  text: {
+    color: "#fff",
+    fontSize: 15,
+    textAlign: 'center',
+    marginTop: 20,
+  },
+
+})
+
+export default App
